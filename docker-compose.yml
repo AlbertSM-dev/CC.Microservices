@@ -1,0 +1,28 @@
+
+services:
+  customer.microservice:
+    image: ${DOCKER_REGISTRY-}customermicroservice
+    build:
+      context: .
+      dockerfile: Customer.Microservice/Dockerfile
+    ports:
+        - '60309:443'
+        - '60309:80'     
+    depends_on:
+      - "rabbitmq"
+
+  rabbitmq:
+    container_name: "rabbitmqcontainer"
+    image: rabbitmq:management
+    hostname: "rabbitmq"
+    ports:
+        - '5672:5672'
+        - '15672:15672'
+
+  order.microservice:
+    image: ${DOCKER_REGISTRY-}ordermicroservice
+    build:
+      context: .
+      dockerfile: Order.Microservice/Dockerfile
+    depends_on:
+      - "rabbitmq"
